@@ -4,16 +4,14 @@
 
 > 이 프로젝트는 LangChain과 OpenAI GPT를 활용하여 명탐정 코난 퀴즈를 통해 사용자의 팬심을 판별하는 AI Agent를 개발하는 실습입니다.
 
----
-
 ## 📁 프로젝트 개요
 
-- **목표**: 사용자가 명탐정 코난에 대해 얼마나 잘 알고 있는지 판별하는 퀴즈 기반 AI를 개발합니다.
-- **핵심 기술**: Python, LangChain, OpenAI GPT
-- **주요 기능**:
-  - 문제은행에서 10개의 퀴즈 무작위 출제 (단답형 & 객관식)
-  - 사용자 답변 수집 및 저장
-  - LLM 기반 자동 채점 및 해설 제공
-  - 최종 점수 및 팬 등급 출력 (예: 입덕 단계, 코난 마스터 등)
+### 가상 환경 생성 및 활성화
 
----
+```unix
+python -m venv venv
+
+.\venv\Scripts\activate     # windows
+source ./venv/bin/activate  # macOS/Linux
+
+```
