@@ -13,5 +13,18 @@ python -m venv venv
 
 .\venv\Scripts\activate     # windows
 source ./venv/bin/activate  # macOS/Linux
+```
 
+### 필수 패키지 설치
+
+```unix
+pip install -r requirements.txt
+```
+
+### OPENAI_API_KEY 설정
+
+`.env` 파일
+
+```shell
+OPENAI_API_KEY=sk-proj***
 ```

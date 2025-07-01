@@ -1,0 +1,11 @@
+langchain
+langchain-community
+langchain-core
+langchain-openai
+langgraph
+python-dotenv
+typing-extensions
+openai
+jupyter
+ipykernel
+gradio
