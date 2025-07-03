@@ -9,3 +9,4 @@ openai
 jupyter
 ipykernel
 gradio
+nb-mypy
