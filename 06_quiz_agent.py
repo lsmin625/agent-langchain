@@ -128,13 +128,43 @@ def handle_user_answer(user_input, quiz_state, messages):
         # 모든 문제를 푼 경우, 채점 Agent 호출
         grading_input_data = build_grading_input(quiz_state)
 
-        # [오류 수정] invoke() 호출 시 'chat_history' 키를 추가합니다.
-        # 대화형 에이전트는 이 키를 필수로 요구하며, 채점은 독립적인 작업이므로 빈 리스트를 전달합니다.
-        result = grading_agent.invoke(
+        # Agent 호출
+        raw_result = grading_agent.invoke(
             {"input": grading_input_data, "chat_history": []}
         )["output"]
 
-        messages.append({"role": "assistant", "content": result})
+        # [수정된 부분] Agent가 반환한 딕셔너리(또는 JSON 문자열)를
+        # 사용자가 보기 좋은 형태의 단일 문자열로 변환합니다.
+        try:
+            # 결과가 JSON 문자열일 경우를 대비해 파싱 시도
+            if isinstance(raw_result, str):
+                result_data = json.loads(raw_result)
+            else:
+                result_data = raw_result  # 이미 딕셔너리인 경우
+
+            # 채점 결과를 바탕으로 문자열 보고서 생성
+            report_parts = ["채점이 완료되었습니다! 📝\n"]
+            for i, res in enumerate(result_data.get("results", [])):
+                is_correct_text = "정답" if res.get("is_correct") else "오답"
+                report_parts.append(f"--- 문제 {i+1} ---")
+                report_parts.append(f"문제: {res.get('question', '질문 없음')}")
+                report_parts.append(f"정답: {res.get('correct_answer', '정답 없음')}")
+                report_parts.append(
+                    f"제출한 답변: {res.get('user_answer', '답변 없음')}"
+                )
+                report_parts.append(f"결과: {is_correct_text}")
+                report_parts.append(f"해설: {res.get('explanation', '')}\n")
+
+            report_parts.append(
+                f"**총점: {result_data.get('total_score', '점수 없음')}**"
+            )
+            final_report = "\n".join(report_parts)
+
+        except (json.JSONDecodeError, TypeError, AttributeError):
+            # 만약 결과가 예상된 딕셔너리 형식이 아니면, 받은 그대로 출력
+            final_report = str(raw_result)
+
+        messages.append({"role": "assistant", "content": final_report})
 
     return quiz_state, messages
 
