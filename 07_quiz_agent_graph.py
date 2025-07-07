@@ -2,15 +2,17 @@ import gradio as gr
 import random
 import json
 import os
+
 from dotenv import load_dotenv
 from typing import List, TypedDict
 
-# LangChain 관련 라이브러리 임포트
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 from langchain_core.output_parsers import PydanticOutputParser
 from langgraph.graph import StateGraph, END
+
+from langchain_teddynote.graphs import visualize_graph
 
 # --- 초기 설정 및 데이터 로딩 ---
 
@@ -18,7 +20,7 @@ QUIZ_FILE = "data/conan_quiz.json"
 QUIZ_COUNT = 3
 
 load_dotenv()
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.7)
+llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.5)
 
 
 # 퀴즈 로딩 함수
@@ -26,9 +28,6 @@ def load_quiz():
     with open(QUIZ_FILE, "r", encoding="utf-8") as f:
         all_q = json.load(f)
     return random.sample(all_q, QUIZ_COUNT)
-
-
-# --- Pydantic 모델 및 State 정의 ---
 
 
 class GradingResult(BaseModel):
@@ -54,9 +53,6 @@ class QuizState(TypedDict):
     final_report: FinalReport | None
 
 
-# --- StateGraph 노드 함수 정의 ---
-
-
 def start_quiz(state: QuizState) -> QuizState:
     """퀴즈를 시작하고 상태를 초기화합니다."""
     questions = load_quiz()
@@ -71,7 +67,7 @@ def start_quiz(state: QuizState) -> QuizState:
     state["quiz_index"] = 0
     state["user_answers"] = []
     state["final_report"] = None
-    state["chat_history"].append(("assistant", "명탐정 코난 퀴즈를 시작합니다! 🕵️‍♂️"))
+    state["chat_history"].append(("assistant", "명탐정 코난 퀴즈를 시작합니다!"))
     return state
 
 
@@ -95,6 +91,11 @@ def process_and_store_answer(state: QuizState) -> QuizState:
     q = state["questions"][idx]
     user_input = state["user_input"].strip()
 
+    # 빈 입력일 경우 안내 메시지만 추가하고, 인덱스는 그대로 유지
+    if not user_input:
+        state["chat_history"].append(("assistant", "답변을 입력해 주세요."))
+        return state
+
     processed_answer = user_input
     if q["type"] == "multiple_choice":
         try:
@@ -111,14 +112,10 @@ def process_and_store_answer(state: QuizState) -> QuizState:
 
 def prepare_grading_prompt(state: QuizState) -> QuizState:
     """채점을 위해 LLM에 전달할 프롬프트를 생성합니다."""
-    state["chat_history"].append(
-        (
-            "assistant",
-            "모든 문제를 다 푸셨군요! 잠시만 기다리시면 채점해 드릴게요... 📝",
-        )
-    )
+    state["chat_history"].append(("assistant", "채점을 진행합니다..."))
+
     parts = [
-        "자, 이제 아래의 문제와 정답, 그리고 사용자의 답변을 보고 채점을 시작해주세요."
+        "지금부터 아래의 문제와 정답, 그리고 사용자의 답변을 보고 채점을 시작해주세요."
     ]
     for i, (q, a) in enumerate(zip(state["questions"], state["user_answers"])):
         parts.append(f"\n--- 문제 {i + 1} ---")
@@ -135,7 +132,11 @@ def prepare_grading_prompt(state: QuizState) -> QuizState:
 def grade_with_llm_and_parse(state: QuizState) -> QuizState:
     """LLM을 호출하여 채점하고 결과를 파싱합니다."""
     parser = PydanticOutputParser(pydantic_object=FinalReport)
-    system_message = "당신은 '명탐정 코난' 퀴즈의 전문 채점관입니다. 주어진 문제, 정답, 사용자 답변을 바탕으로 채점해주세요. 각 문제에 대해 정답 여부를 판단하고 친절한 해설을 덧붙여주세요. 모든 채점이 끝나면, 마지막에는 '총점: X/Y' 형식으로 최종 점수를 반드시 요약해서 보여줘야 합니다. 반드시 지정된 JSON 형식으로만 답변해야 합니다."
+    system_message = """
+    당신은 '명탐정 코난' 퀴즈의 전문 채점관입니다. 주어진 문제, 정답, 사용자 답변을 바탕으로 채점해주세요. 
+    각 문제에 대해 정답 여부를 판단하고 친절한 해설을 덧붙여주세요. 
+    모든 채점이 끝나면, 마지막에는 '총점: X/Y' 형식으로 최종 점수를 반드시 요약해서 보여줘야 합니다. 
+    반드시 지정된 JSON 형식으로만 답변해야 합니다."""
 
     prompt = ChatPromptTemplate.from_messages(
         [
@@ -191,9 +192,6 @@ def handle_invalid_start(state: QuizState) -> QuizState:
     return state
 
 
-# --- StateGraph 조건부 함수 ---
-
-
 def should_continue_quiz(state: QuizState) -> str:
     """퀴즈를 계속할지, 채점을 시작할지 결정합니다."""
     if state["quiz_index"] < len(state["questions"]):
@@ -213,8 +211,6 @@ def route_initial_input(state: QuizState) -> str:
             return "invalid_start"
 
 
-# --- StateGraph 정의 및 컴파일 ---
-
 workflow = StateGraph(QuizState)
 
 # 노드 추가
@@ -226,7 +222,7 @@ workflow.add_node("grade_and_parse", grade_with_llm_and_parse)
 workflow.add_node("format_report", format_final_report)
 workflow.add_node("invalid_start", handle_invalid_start)
 
-# === 오류 수정: 조건부 진입점 설정 ===
+# 조건부 진입점 설정
 workflow.set_conditional_entry_point(
     route_initial_input,
     {
@@ -251,9 +247,6 @@ workflow.add_edge("grade_and_parse", "format_report")
 workflow.add_edge("format_report", END)
 
 quiz_app = workflow.compile()
-
-
-# --- Gradio UI 및 인터페이스 함수 ---
 
 
 def init_state():
@@ -290,22 +283,21 @@ def chat_fn(user_input, state):
     return chat_display, state
 
 
-# --- UI 정의 ---
+# Gradio UI
 with gr.Blocks(theme=gr.themes.Soft()) as demo:
-    gr.Markdown("### 🕵️ 명탐정 코난 매니아 판별기 (LangGraph ver.)")
+    gr.Markdown("### 🕵️ 명탐정 코난 매니아 판별기 (by LangGraph)")
 
     chatbot = gr.Chatbot(
         label="명탐정 코난 퀴즈 챗봇",
-        height=500,
+        height=400,
         avatar_images=("data/avatar_user.png", "data/avatar_conan.png"),
         type="messages",
     )
 
-    txt = gr.Textbox(
-        placeholder="'퀴즈 시작'을 입력해보세요!", show_label=False, container=False
-    )
+    txt = gr.Textbox(placeholder="'퀴즈 시작'을 입력해보세요!", show_label=False)
     state = gr.State(init_state())
-    txt.submit(chat_fn, inputs=[txt, state], outputs=[chatbot, state])
-    txt.submit(lambda: "", None, txt, queue=False)
 
-demo.launch(debug=True)
+    txt.submit(chat_fn, inputs=[txt, state], outputs=[chatbot, state])
+    txt.submit(lambda: "", None, txt)
+
+    demo.launch()
