@@ -29,4 +29,4 @@ pip install -r requirements.txt
 OPENAI_API_KEY=sk-proj***
 ```
 
-https://docs.google.com/spreadsheets/d/1-rve7PzUjX9k7l8Z5JxpO4sksrzb-eSU/edit?gid=890286484#gid=890286484
+https://docs.google.com/spreadsheets/d/1EbiTrZjIpHb896IxSAfmz40yVc8uIUv0/edit?gid=786326351#gid=786326351
