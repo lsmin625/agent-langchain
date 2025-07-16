@@ -1,0 +1,157 @@
+[
+	{
+		"id": "Q001",
+		"type": "short_answer",
+		"question": "코드 변경 사항을 원격 저장소에 반영하는 작업은 무엇인가요?",
+		"answer": "푸시 또는 Push"
+	},
+	{
+		"id": "Q002",
+		"type": "short_answer",
+		"question": "서비스 접속량을 나타내는 용어는 무엇인가요?",
+		"answer": "트래픽 또는 Traffic"
+	},
+	{
+		"id": "Q003",
+		"type": "short_answer",
+		"question": "최신 코드를 원격 저장소에서 가져오는 작업은 무엇인가요?",
+		"answer": "풀 또는 Pull"
+	},
+	{
+		"id": "Q005",
+		"type": "short_answer",
+		"question": "시스템의 상태를 감시하는 작업은 무엇인가요?",
+		"answer": "모니터링 또는 Monitoring"
+	},
+	{
+		"id": "Q006",
+		"type": "short_answer",
+		"question": "긴급하게 코드를 수정하여 배포하는 작업은 무엇인가요?",
+		"answer": "핫픽스 또는 Hotfix"
+	},
+	{
+		"id": "Q009",
+		"type": "short_answer",
+		"question": "시스템의 이전 상태로 복구하는 작업은 무엇인가요?",
+		"answer": "롤백 또는 Rollback"
+	},
+	{
+		"id": "Q011",
+		"type": "multiple_choice",
+		"question": "다음 중 용어와 의미가 잘못 연결된 것은?",
+		"choices": [
+			"브랜치 (Branch): 독립된 작업 공간",
+			"레포 (Repository): 코드 저장소",
+			"머지 (Merge): 최신 코드 가져오기",
+			"커밋 (Commit): 변경 저장"
+		],
+		"answer": "머지 (Merge): 최신 코드 가져오기"
+	},
+	{
+		"id": "Q012",
+		"type": "multiple_choice",
+		"question": "다음 중 용어와 의미가 잘못 연결된 것은?",
+		"choices": [
+			"페르소나 (Persona): 사용자 모델",
+			"프로토타입 (Prototype): 클릭 가능한 시제품",
+			"목업 (Mock-up): 디자인 시안",
+			"UI: 사용자 경험"
+		],
+		"answer": "UI: 사용자 경험"
+	},
+	{
+		"id": "Q013",
+		"type": "multiple_choice",
+		"question": "다음 중 용어와 의미가 잘못 연결된 것은?",
+		"choices": [
+			"트래픽 (Traffic): 접속량",
+			"로깅 (Logging): 시스템 기록",
+			"서버 다운 (Server Down): 서비스 중지",
+			"배치 (Batch): 긴급 수정"
+		],
+		"answer": "배치 (Batch): 긴급 수정"
+	},
+	{
+		"id": "Q014",
+		"type": "multiple_choice",
+		"question": "다음 중 용어와 의미가 잘못 연결된 것은?",
+		"choices": [
+			"애자일 (Agile): 유연한 개발 방식",
+			"스크럼 (Scrum): 협업 중심 개발 방식",
+			"스프린트 (Sprint): 장기 개발 계획",
+			"레트로 스펙티브 (Retrospective): 회고 회의"
+		],
+		"answer": "스프린트 (Sprint): 장기 개발 계획"
+	},
+	{
+		"id": "Q015",
+		"type": "multiple_choice",
+		"question": "다음 중 용어와 의미가 잘못 연결된 것은?",
+		"choices": [
+			"빌드 (Build): 실행 파일 생성",
+			"테스트 커버리지 (Test Coverage): 애플리케이션 동작 흐름",
+			"디버깅 (Debugging): 오류 수정",
+			"배포 (Deployment): 사용자 서비스 환경에 설치"
+		],
+		"answer": "테스트 커버리지 (Test Coverage): 애플리케이션 동작 흐름"
+	},
+	{
+		"id": "Q016",
+		"type": "multiple_choice",
+		"question": "다음 중 용어와 의미가 올바르게 연결된 것은?",
+		"choices": ["디버깅: 코드 통합", "쿠버네티스: 컨테이너 관리", "커밋: 원격 저장소 반영", "풀: 변경 사항 저장"],
+		"answer": "쿠버네티스: 컨테이너 관리"
+	},
+	{
+		"id": "Q017",
+		"type": "multiple_choice",
+		"question": "다음 중 용어와 의미가 올바르게 연결된 것은?",
+		"choices": ["페르소나: 사용자 모델", "UI: 사용자 경험", "배치: 긴급 수정", "트러블 슈팅: 코드 병합"],
+		"answer": "페르소나: 사용자 모델"
+	},
+	{
+		"id": "Q018",
+		"type": "multiple_choice",
+		"question": "다음 중 용어와 의미가 올바르게 연결된 것은?",
+		"choices": ["이슈: 해결 과제", "롤백: 정식 배포", "로직: 입력 값", "파라미터: 함수의 결과값"],
+		"answer": "이슈: 해결 과제"
+	},
+	{
+		"id": "Q019",
+		"type": "multiple_choice",
+		"question": "다음 중 용어와 의미가 올바르게 연결된 것은?",
+		"choices": [
+			"스탠드업 미팅: 짧은 일일 회의",
+			"킥오프: 프로젝트 종료 회의",
+			"OKR: 코드 충돌",
+			"CI/CD: 컨테이너 관리"
+		],
+		"answer": "스탠드업 미팅: 짧은 일일 회의"
+	},
+	{
+		"id": "Q020",
+		"type": "multiple_choice",
+		"question": "다음 중 용어와 의미가 잘못 연결된 것은?",
+		"choices": [
+			"애자일: 유연한 개발 방식",
+			"서버 다운: 서비스 중지",
+			"브랜치: 독립된 작업 공간",
+			"컨테이너: 코드 기반 인프라 구성"
+		],
+		"answer": "컨테이너: 코드 기반 인프라 구성"
+	},
+	{
+		"id": "Q021",
+		"type": "multiple_choice",
+		"question": "다음 중 용어와 의미의 연결이 올바른 것은?",
+		"choices": ["프로토타입: 디자인 시안", "레포: 코드 저장소", "트래픽: 시스템 기록", "스크럼: 회고 회의"],
+		"answer": "레포: 코드 저장소"
+	},
+	{
+		"id": "Q022",
+		"type": "multiple_choice",
+		"question": "다음 중 용어와 의미의 연결이 올바른 것은?",
+		"choices": ["UI: 사용자 경험", "UX: 사용자 인터페이스", "배치: 정기 자동 실행 작업", "릴리즈: 코드 충돌"],
+		"answer": "배치: 정기 자동 실행 작업"
+	}
+]
